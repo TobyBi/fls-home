@@ -1,6 +1,10 @@
 from flask import render_template
-
+import requests
 from app import app
+#Needs app. AND foldername != filename (Context: We are idiots)
+from app.helperFunctions.corona import getErlangen
+
+
 
 @app.route('/')
 @app.route('/home')
@@ -9,4 +13,6 @@ def base():
 
 @app.route('/corona')
 def corona():
-    return render_template("corona.html")
+    #x = requests.get('https://api.corona-zahlen.org/districts/09562').content
+    # getErlangen()
+    return getErlangen()
