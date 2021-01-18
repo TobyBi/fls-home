@@ -1,6 +1,7 @@
 <html>
     <head>
       <title>Welcome to Friedrich List!</title>
+      <link rel="stylesheet" href="/static/style.css">
     </head>
     <body>
         <div>FSL: 
@@ -11,5 +12,47 @@
 
         <hr>
         {% block content %}{% endblock %}
+        hallo
+        
+        <div id="marius">
+            <div>
+                <h1>[[ test ]]</h1>
+                <h2>[[ meta.source ]]</h2>
+                <h3>Cases per week: [[ coronaData.casesPerWeek ]]</h3>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+        <!--<script src="/static/script.js"></script>-->
+        <script>
+            new Vue({
+                el: '#marius',
+                delimiters: ['[[', ']]'],
+                data () {
+                    return {
+                        test: 'voice call',
+                        coronaData: {
+                            casesPerWeek: 0,
+                        },
+                        meta: {
+                            source: '',
+                        },
+                    };
+                },
+                mounted () {
+                    this.getData();
+                    setInterval(this.getData, 5*60*1000); //every 5 min lol
+                },
+                methods: {
+                    getData () {
+                        fetch('/corona')
+                            .then((res) => res.json())
+                            .then((res) => {
+                                this.coronaData = res.data
+                                this.meta = res.meta
+                            })
+                    }
+                }
+            })
+        </script>
     </body>
-</html>
+    </html>

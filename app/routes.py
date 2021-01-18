@@ -1,10 +1,15 @@
 import requests
+import json
+
 
 from flask import Flask, render_template, request
 from app import app
+from decouple import config
+
+
 #Needs app. AND foldername != filename (Context: We are idiots)
 from app.helperFunctions.corona import getErlangen
-import json
+from app.some_static_shit import *
 
 
 
@@ -15,18 +20,21 @@ def base():
 
 @app.route('/corona')
 def corona():
-    #x = requests.get('https://api.corona-zahlen.org/districts/09562').content
-    # getErlangen()
-    return render_template("corona.html", cor=getErlangen())
+    y = requests.get('https://api.corona-zahlen.org/districts/' + CITY_CODE)
+    y = y.json()
+    return {
+        'data': y['data'][CITY_CODE],
+        'meta': y['meta'],
+    }
+    return render_template("corona.html", cor=y['meta']['contact'])
 
 @app.route('/weather')
 def weather():    
-    
-    #todo
-    API_KEY_OPENWEATHER = ""
-
-    url = 'http://api.openweathermap.org/data/2.5/weather?q=Erlangen&appid=' + API_KEY_OPENWEATHER
-
+    url = 'http://api.openweathermap.org/data/2.5/weather?q=Erlangen&appid=' + config('KEY_API_OPENWEATHERMAP')
     response = requests.get(url)
     data = json.loads(response.text)
     return data
+
+@app.route('/test')
+def test():
+    return
